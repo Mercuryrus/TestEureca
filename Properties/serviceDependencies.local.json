@@ -1,0 +1,12 @@
+{
+  "dependencies": {
+    "secrets1": {
+      "type": "secrets.user"
+    },
+    "mssql1": {
+      "type": "mssql.local",
+      "connectionId": "ConnectionStrings:Server=127.0.0.1;Port=5432;Database=TaskEureka;User=postgre;Password=Lollord9889;",
+      "secretStore": "LocalSecretsFile"
+    }
+  }
+}
