@@ -20,27 +20,8 @@ namespace TestEureca
     {
         public static void Main()
         {
-            using (ApplicationContext db = new ApplicationContext())
-            {
-                // סמחהאול הגא מבתוךעא User
-                Books user1 = new Books { ID = 1, Book = "Tom", Author = "Tooooooo" };
-                Books user2 = new Books { ID = 2, Book = "Alice", Author = "JEEEEEEeee, Liasss" };
-
-                // המבאגכÿול טץ ג בה
-                db.Books.AddRange(user1, user2);
-                db.SaveChanges();
-            }
-            // ןמכףקוםטו האםםûץ
-            using (ApplicationContext db = new ApplicationContext())
-            {
-                // ןמכףקאול מבתוךעû טח בה ט גûגמהטל םא ךמםסמכü
-                var books = db.Books.ToList();
-                Console.WriteLine("Books list:");
-                foreach (Books u in books)
-                {
-                    Console.WriteLine($"{u.ID}.{u.Book} - {u.Author}");
-                }
-            }
+            Menu Menu = new Menu();
+            Menu.MainMenu();
         }
     }
 }
