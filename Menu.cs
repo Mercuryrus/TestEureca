@@ -14,8 +14,10 @@ namespace TestEureca
             Console.Clear();
             Console.WriteLine("Главное меню:");
             Console.WriteLine("1) Добавить книгу");
-            Console.WriteLine("2) Показать список книг");
-            Console.WriteLine("3) Удалить книгу");
+            Console.WriteLine("2) Добавить автора");
+            Console.WriteLine("3) Показать список книг");
+            Console.WriteLine("4) Удалить книгу");
+            Console.WriteLine("5) Удалить автора");
             Console.WriteLine("0) Выход");
             Console.Write("\r\nВыберите вариант: ");
 
@@ -25,10 +27,16 @@ namespace TestEureca
                     Act.AddBook();
                     return true;
                 case "2":
-                    Act.ShowBook();
+                    Act.AddAuthor();
                     return true;
                 case "3":
+                    Act.ShowBook();
+                    return true;
+                case "4":
                     Act.RemoveBook();
+                    return true;
+                case "5":
+                    Act.RemoveAuthor();
                     return true;
                 case "0":
                     return false;
