@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+
 
 namespace TestEureca
 {
@@ -13,30 +11,46 @@ namespace TestEureca
             Action Act = new Action();
             Console.Clear();
             Console.WriteLine("Главное меню:");
-            Console.WriteLine("1) Добавить книгу");
+            Console.WriteLine("1) Добавить книгу и автора");
             Console.WriteLine("2) Добавить автора");
-            Console.WriteLine("3) Показать список книг");
-            Console.WriteLine("4) Удалить книгу");
-            Console.WriteLine("5) Удалить автора");
+            Console.WriteLine("3) Добавить книгу");
+            Console.WriteLine("4) Показать список книг и авторов");
+            Console.WriteLine("5) Показать список книг");
+            Console.WriteLine("6) Показать список авторов");
+            Console.WriteLine("7) Удалить книгу");
+            Console.WriteLine("8) Удалить автора");
+            Console.WriteLine("9) Удалить книгу и автора");
             Console.WriteLine("0) Выход");
             Console.Write("\r\nВыберите вариант: ");
 
             switch (Console.ReadLine())
             {
                 case "1":
-                    Act.AddBook();
+                    Act.AddBookAndAuthor();
                     return true;
                 case "2":
                     Act.AddAuthor();
                     return true;
                 case "3":
-                    Act.ShowBook();
+                    Act.AddBook();
                     return true;
                 case "4":
-                    Act.RemoveBook();
+                    Act.ShowBookandAuthor();
                     return true;
                 case "5":
+                    Act.ShowBooks();
+                    return true;
+                case "6":
+                    Act.ShowAuthors();
+                    return true;
+                case "7":
+                    Act.RemoveBook();
+                    return true;
+                case "8":
                     Act.RemoveAuthor();
+                    return true;
+                case "8":
+                    Act.RemoveBookAndAuthor();
                     return true;
                 case "0":
                     return false;
@@ -57,11 +71,13 @@ namespace TestEureca
             switch (Console.ReadLine())
             {
                 case "1":
-                    Act.AddBook();
+                    Act.AddBookAndAuthor();
                     return true;
                 case "2":
                     MainMenu();
                     return true;
+                case "0":
+                    return false;
                 default:
                     AddMenu();
                     return true;
@@ -112,7 +128,7 @@ namespace TestEureca
                     Act.EditBookAuthor();
                     return true;
                 case "4":
-                    Act.ShowAuthorBook();
+                    Act.ShowAuthorBooks();
                     return true;
                 case "0":
                     return false;

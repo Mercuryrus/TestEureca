@@ -4,8 +4,8 @@ namespace TestEureca.Models
 {
     public class AuthorModel
     {
-        public int IDAuthors { get; set; }
-        public string Authors { get; set; }
+        public int ID { get; set; }
+        public string Author { get; set; }
         
     }
 }

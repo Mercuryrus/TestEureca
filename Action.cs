@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using TestEureca.Models;
 
 namespace TestEureca
@@ -9,15 +7,30 @@ namespace TestEureca
     public class Action
     {
         public Menu Menu = new Menu();
-        public void AddBook()
+        public void AddBookAndAuthor()
         {
             using (ApplicationContext db = new ApplicationContext())
             {
                 Console.WriteLine("Введите название книги:");
                 string book = Console.ReadLine();
-                BookModel addbook = new BookModel { Books = book };
-                db.Book.AddRange(addbook);
+                Console.WriteLine("Введите автора:");
+                string author = Console.ReadLine();
+                if ((author == string.Empty) || (book == string.Empty))
+                {
+                    Console.WriteLine("Ошибка ввода");
+                    return;
+                }
+                BookModel addbook = new BookModel { Book = book };
+                AuthorModel addauthor = new AuthorModel { Author = author };
+                db.Authors.AddRange(addauthor);
+                db.Books.AddRange(addbook);
                 db.SaveChanges();
+                int bookId = db.Books.OrderBy(x => x.ID).Last().ID;
+                int authorId = db.Authors.OrderBy(x => x.ID).Last().ID;
+                BookAuthorModel addAuthorBook = new BookAuthorModel { BookID = bookId, AuthorID = authorId };
+                db.BookAuthor.AddRange(addAuthorBook);
+                db.SaveChanges();
+                Console.WriteLine("Запись добавлена");
             }
             Menu.AddMenu();
         }
@@ -27,24 +40,77 @@ namespace TestEureca
             {
                 Console.WriteLine("Введите автора:");
                 string author= Console.ReadLine();
-                AuthorModel addauthor = new AuthorModel { Authors = author };
-                db.Author.AddRange(addauthor);
+                if(author==string.Empty)
+                {
+                    Console.WriteLine("Ошибка ввода");
+                    return;
+                }
+                AuthorModel addauthor = new AuthorModel { Author = author };
+                db.Authors.AddRange(addauthor);
                 db.SaveChanges();
+                Console.WriteLine("Запись добавлена");
             }
             Menu.AddMenu();
         }
-        public void ShowBook()
+        public void AddBook()
+        {
+            using (ApplicationContext db = new ApplicationContext())
+            {
+                Console.WriteLine("Введите автора:");
+                string book = Console.ReadLine();
+                if (book == string.Empty)
+                {
+                    Console.WriteLine("Ошибка ввода");
+                    return;
+                }
+                BookModel addbook = new BookModel { Book = book };
+                db.Books.AddRange(addbook);
+                db.SaveChanges();
+                Console.WriteLine("Запись добавлена");
+            }
+            Menu.AddMenu();
+        }
+        public void ShowBookandAuthor()
         {
             Console.Clear();
             using (ApplicationContext db = new ApplicationContext())
             {
-                foreach (BookAuthorModel id in db.Books)
+                var bookAuthorIDs = db.BookAuthor
+                    .AsEnumerable()
+                    .GroupBy(x => x.BookID)
+                    .ToDictionary(x => x.Key, x => x.Select(y => y.AuthorID)
+                    .ToList());
+                foreach (var keyValue in bookAuthorIDs)
                 {
-                    int bookID = Convert.ToInt32(db.Book.Where(x => x.IDBooks == id.BookID));
-                    int authorID = Convert.ToInt32(db.Books.Select(x => x.AuthorID));
-                    BookModel book = db.Book.Where(x => x.IDBooks == bookID).FirstOrDefault();
-                    AuthorModel author = db.Author.Where(x => x.IDAuthors == authorID).FirstOrDefault();
-                    Console.WriteLine($"{id.ID}. {book} - {author}");
+                    Console.Write($"{db.Books.Single(x => x.ID == keyValue.Key).Book} - ");
+                    foreach(var authorID in keyValue.Value)
+                    {
+                        Console.WriteLine($"{db.Authors.Single(x => x.ID == authorID).Author}\n");
+                    }
+                }
+            }
+            Menu.ShowMenu();
+        }
+        public void ShowAuthors()
+        {
+            Console.Clear();
+            using (ApplicationContext db = new ApplicationContext())
+            {
+                foreach (AuthorModel id in db.Authors)
+                {
+                    Console.WriteLine($"{id.ID}.{id.Author}\n");
+                }
+            }
+            Menu.ShowMenu();
+        }
+        public void ShowBooks()
+        {
+            Console.Clear();
+            using (ApplicationContext db = new ApplicationContext())
+            {
+                foreach (BookModel id in db.Books)
+                {
+                    Console.WriteLine($"{id.ID}.{id.Book}\n");
                 }
             }
             Menu.ShowMenu();
@@ -55,12 +121,12 @@ namespace TestEureca
             {
                 Console.WriteLine("Введите ID для редактирования");
                 int id = int.Parse(Console.ReadLine());
-                BookModel ID = db.Book.Where(x => x.IDBooks == id).FirstOrDefault();
+                BookModel ID = db.Books.Where(x => x.ID == id).FirstOrDefault();
                 Console.WriteLine("Введите новое название книги"); 
-                ID.Books = Console.ReadLine();
+                ID.Book = Console.ReadLine();
                 db.SaveChanges();
             }
-            ShowBook();
+            ShowBooks();
         }
         public void EditBookAuthor()
         {
@@ -68,12 +134,12 @@ namespace TestEureca
             {
                 Console.WriteLine("Введите ID для редактирования");
                 int id = int.Parse(Console.ReadLine());
-                BookAuthorModel ID = db.Books.Where(x => x.ID == id).FirstOrDefault();
+                BookAuthorModel ID = db.BookAuthor.Where(x => x.ID == id).FirstOrDefault();
                 Console.WriteLine("Введите id автора");
                 ID.AuthorID = int.Parse(Console.ReadLine());
                 db.SaveChanges();
             }
-            ShowBook();
+            ShowBooks();
         }
         public void RemoveBook()
         {
@@ -81,8 +147,8 @@ namespace TestEureca
             {
                 Console.WriteLine("Введите ID для удаления");
                 int id = int.Parse(Console.ReadLine());
-                BookModel ID = db.Book.Where(x => x.IDBooks == id).FirstOrDefault();
-                db.Book.RemoveRange(ID);
+                BookModel ID = db.Books.Where(x => x.ID == id).FirstOrDefault();
+                db.Books.RemoveRange(ID);
                 //Console.WriteLine("Нет книги с данным ID");
                 db.SaveChanges();
             }
@@ -94,21 +160,21 @@ namespace TestEureca
             {
                 Console.WriteLine("Введите ID для удаления");
                 int id = int.Parse(Console.ReadLine());
-                AuthorModel ID = db.Author.Where(x => x.IDAuthors == id).FirstOrDefault();
-                db.Author.RemoveRange(ID);
+                AuthorModel ID = db.Authors.Where(x => x.ID == id).FirstOrDefault();
+                db.Authors.RemoveRange(ID);
                 //Console.WriteLine("Нет Автора с данным ID");
                 db.SaveChanges();
             }
             Menu.RemoveMenu();
         }
-        public void ShowAuthorBook()
+        public void ShowAuthorBooks()
         {
             Console.Clear();
             using (ApplicationContext db = new ApplicationContext())
             {
                 Console.WriteLine("Введите ID автора");
                 int author = int.Parse(Console.ReadLine());
-                var books = db.Books.Where(x=>x.AuthorID == author).ToList();
+                var books = db.BookAuthor.Where(x=>x.AuthorID == author).ToList();
                 Console.WriteLine($"Books {author} list:");
                 foreach (BookAuthorModel str in books)
                 {
