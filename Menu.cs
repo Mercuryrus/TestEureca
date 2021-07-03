@@ -88,6 +88,7 @@ namespace TestEureca
             Console.WriteLine("1) В главное меню");
             Console.WriteLine("2) Изменить названия книги");
             Console.WriteLine("3) Изменить автора");
+            Console.WriteLine("4) Книги автора");
             Console.WriteLine("0) Выход");
             Console.Write("\r\nВыберите вариант: ");
 
@@ -101,6 +102,9 @@ namespace TestEureca
                     return true;
                 case "3":
                     Act.EditBookAuthor();
+                    return true;
+                case "4":
+                    Act.ShowAuthorBook();
                     return true;
                 case "0":
                     return false;

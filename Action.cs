@@ -75,5 +75,21 @@ namespace TestEureca
             }
             Menu.RemoveMenu();
         }
+        public void ShowAuthorBook()
+        {
+            Console.Clear();
+            using (ApplicationContext db = new ApplicationContext())
+            {
+                Console.WriteLine("Введите имя автора");
+                string author = Console.ReadLine();
+                var books = db.Books.Where(x=>x.Author == author).ToList();
+                Console.WriteLine($"Books {author} list:");
+                foreach (Books str in books)
+                {
+                    Console.WriteLine($"{str.ID}.{str.Book} - {str.Author}");
+                }
+            }
+            Menu.ShowMenu();
+        }
     }
 }
