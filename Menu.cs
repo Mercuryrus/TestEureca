@@ -20,6 +20,8 @@ namespace TestEureca
             Console.WriteLine("7) Удалить книгу");
             Console.WriteLine("8) Удалить автора");
             Console.WriteLine("9) Удалить книгу и автора");
+            Console.WriteLine("10) Изменить название книги");
+            Console.WriteLine("11) Изменить имя автора");
             Console.WriteLine("0) Выход");
             Console.Write("\r\nВыберите вариант: ");
 
@@ -35,7 +37,7 @@ namespace TestEureca
                     Act.AddBook();
                     return true;
                 case "4":
-                    Act.ShowBookandAuthor();
+                    Act.ShowBookAndAuthor();
                     return true;
                 case "5":
                     Act.ShowBooks();
@@ -52,88 +54,16 @@ namespace TestEureca
                 case "9":
                     Act.RemoveBookAndAuthor();
                     return true;
-                case "0":
-                    return false;
-                default:
-                    MainMenu();
-                    return true;
-            }
-        }
-        public bool AddMenu()
-        {
-            Action Act = new Action();
-            Console.WriteLine("Меню:");
-            Console.WriteLine("1) Добавить еще книгу");
-            Console.WriteLine("2) В главное меню");
-            Console.WriteLine("0) Выход");
-            Console.Write("\r\nВыберите вариант: ");
-
-            switch (Console.ReadLine())
-            {
-                case "1":
-                    Act.AddBookAndAuthor();
-                    return true;
-                case "2":
-                    MainMenu();
-                    return true;
-                case "0":
-                    return false;
-                default:
-                    AddMenu();
-                    return true;
-            }
-        }
-        public bool RemoveMenu()
-        {
-            Action Act = new Action();
-            Console.WriteLine("Меню:");
-            Console.WriteLine("1) Удалить еще одну книгу");
-            Console.WriteLine("2) В главное меню");
-            Console.WriteLine("0) Выход");
-            Console.Write("\r\nВыберите вариант: ");
-
-            switch (Console.ReadLine())
-            {
-                case "1":
-                    Act.RemoveBook();
-                    return true;
-                case "2":
-                    MainMenu();
-                    return true;
-                default:
-                    RemoveMenu();
-                    return true;
-            }
-        }
-        public bool ShowMenu()
-        {
-            Action Act = new Action();
-            Console.WriteLine("Меню:");
-            Console.WriteLine("1) В главное меню");
-            Console.WriteLine("2) Изменить название книги");
-            Console.WriteLine("3) Изменить автора");
-            Console.WriteLine("4) Показать список книг и авторов");
-            Console.WriteLine("0) Выход");
-            Console.Write("\r\nВыберите вариант: ");
-
-            switch (Console.ReadLine())
-            {
-                case "1":
-                    MainMenu();
-                    return true;
-                case "2":
+                case "10":
                     Act.EditBook();
                     return true;
-                case "3":
+                case "11":
                     Act.EditAuthor();
-                    return true;
-                case "4":
-                    Act.ShowBookandAuthor();
                     return true;
                 case "0":
                     return false;
                 default:
-                    ShowMenu();
+                    MainMenu();
                     return true;
             }
         }
