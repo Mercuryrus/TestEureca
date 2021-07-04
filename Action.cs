@@ -18,7 +18,7 @@ namespace TestEureca
                 if ((author == string.Empty) || (book == string.Empty))
                 {
                     Console.WriteLine("Ошибка ввода");
-                    return;
+                    AddBookAndAuthor();
                 }
                 BookModel addbook = new BookModel { Book = book };
                 AuthorModel addauthor = new AuthorModel { Author = author };
@@ -39,8 +39,8 @@ namespace TestEureca
             using (ApplicationContext db = new ApplicationContext())
             {
                 Console.WriteLine("Введите автора:");
-                string author= Console.ReadLine();
-                if(author==string.Empty)
+                string author = Console.ReadLine();
+                if (author == string.Empty)
                 {
                     Console.WriteLine("Ошибка ввода");
                     return;
@@ -83,13 +83,13 @@ namespace TestEureca
                 foreach (var keyValue in bookAuthorIDs)
                 {
                     Console.Write($"{db.Books.Single(x => x.ID == keyValue.Key).Book} - ");
-                    foreach(var authorID in keyValue.Value)
+                    foreach (var authorID in keyValue.Value)
                     {
                         Console.WriteLine($"{db.Authors.Single(x => x.ID == authorID).Author}\n");
                     }
                 }
             }
-            Menu.ShowMenu();
+            Menu.AddMenu();
         }
         public void ShowAuthors()
         {
@@ -115,28 +115,63 @@ namespace TestEureca
             }
             Menu.ShowMenu();
         }
-        public void EditBookName()
+        public void EditBook()
         {
             using (ApplicationContext db = new ApplicationContext())
             {
-                Console.WriteLine("Введите ID для редактирования");
+                Console.WriteLine("\nВведите ID книги для редактирования");
                 int id = int.Parse(Console.ReadLine());
+                foreach (var book in db.Books)
+                    if (id != book.ID)
+                    {
+                        Console.WriteLine($"Книга с ID({id}) не найдена");
+                        return;
+                    }
                 BookModel ID = db.Books.Where(x => x.ID == id).FirstOrDefault();
-                Console.WriteLine("Введите новое название книги"); 
+                Console.WriteLine("Введите новое название книги");
                 ID.Book = Console.ReadLine();
+                db.Books.Update(ID);    
                 db.SaveChanges();
             }
             ShowBooks();
         }
-        public void EditBookAuthor()
+        public void EditAuthor()
         {
             using (ApplicationContext db = new ApplicationContext())
             {
-                Console.WriteLine("Введите ID для редактирования");
+                Console.WriteLine("\nВведите ID автора для редактирования");
                 int id = int.Parse(Console.ReadLine());
+                foreach (var author in db.Authors)
+                    if (id != author.ID)
+                    {
+                        Console.WriteLine($"Автор с ID({id}) не найден");
+                        return;
+                    }
+                AuthorModel ID = db.Authors.Where(x => x.ID == id).FirstOrDefault();
+                Console.WriteLine("Введите новое имя автора");
+                ID.Author = Console.ReadLine();
+                db.Authors.Update(ID);
+                db.SaveChanges();
+            }
+            ShowBooks();
+        }
+        public void RemoveBookAndAuthor()
+        {
+            using (ApplicationContext db = new ApplicationContext())
+            {
+                Console.WriteLine("\nВведите ID для для удаления");
+                int id = int.Parse(Console.ReadLine());
+                foreach (var bookAuthor in db.BookAuthor)
+                {
+                    if(bookAuthor.ID != id)
+                    {
+                        Console.WriteLine($"ID({id}) не найден");
+                        return;
+                    }
+                }
                 BookAuthorModel ID = db.BookAuthor.Where(x => x.ID == id).FirstOrDefault();
-                Console.WriteLine("Введите id автора");
-                ID.AuthorID = int.Parse(Console.ReadLine());
+                db.BookAuthor.RemoveRange(ID);
+                db.BookAuthor.Update(ID);
                 db.SaveChanges();
             }
             ShowBooks();
@@ -145,11 +180,21 @@ namespace TestEureca
         {
             using (ApplicationContext db = new ApplicationContext())
             {
-                Console.WriteLine("Введите ID для удаления");
+                Console.Clear();
+                ShowBooks();
+                Console.WriteLine("\nВведите ID книги для удаления");
                 int id = int.Parse(Console.ReadLine());
+                foreach (var book in db.Books)
+                {
+                    if (book.ID != id)
+                    {
+                        Console.WriteLine($"ID({id}) не найден");
+                        return;
+                    }
+                }
                 BookModel ID = db.Books.Where(x => x.ID == id).FirstOrDefault();
                 db.Books.RemoveRange(ID);
-                //Console.WriteLine("Нет книги с данным ID");
+                db.Books.Update(ID);
                 db.SaveChanges();
             }
             Menu.RemoveMenu();
@@ -158,30 +203,24 @@ namespace TestEureca
         {
             using (ApplicationContext db = new ApplicationContext())
             {
-                Console.WriteLine("Введите ID для удаления");
+                Console.Clear();
+                ShowAuthors();
+                Console.WriteLine("\nВведите ID автора для удаления");
                 int id = int.Parse(Console.ReadLine());
+                foreach (var author in db.Authors)
+                {
+                    if (author.ID != id)
+                    {
+                        Console.WriteLine($"ID({id}) не найден");
+                        return;
+                    }
+                }
                 AuthorModel ID = db.Authors.Where(x => x.ID == id).FirstOrDefault();
                 db.Authors.RemoveRange(ID);
-                //Console.WriteLine("Нет Автора с данным ID");
+                db.Authors.Update(ID);
                 db.SaveChanges();
             }
             Menu.RemoveMenu();
-        }
-        public void ShowAuthorBooks()
-        {
-            Console.Clear();
-            using (ApplicationContext db = new ApplicationContext())
-            {
-                Console.WriteLine("Введите ID автора");
-                int author = int.Parse(Console.ReadLine());
-                var books = db.BookAuthor.Where(x=>x.AuthorID == author).ToList();
-                Console.WriteLine($"Books {author} list:");
-                foreach (BookAuthorModel str in books)
-                {
-                    Console.WriteLine($"{str.ID}.{str.BookID} - {str.AuthorID}");
-                }
-            }
-            Menu.ShowMenu();
         }
     }
 }
